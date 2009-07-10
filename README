@@ -1,0 +1,50 @@
+= Postage - API for write posts in simple text files
+
+* {Repository}[http://github.com/hallison/postage/]
+* {Project}[http://rubyforge.org/projects/postage/]
+* {Documentation}[http://postage.rubyforge.org/]
+* {Bug Tracker}[http://rubyforge.org/tracker/?atid=2472&group_id=627&func=browse]
+
+
+Postage is a simple API which load your text files and handle the
+contents in Markdown syntax.
+
+It's useful for _blogwares_, or anything else, that uses flat files
+organized in directories instead databases.
+
+Use your post text file in following hierarchy and format:
+
+    /posts/path/yyyymmdd-name_of_post.tags.filter
+
+Real example of use:
+
+    home
+    `-- hallison
+        `-- blog
+            `-- posts
+                |-- 20090604-posting_blog_articles_using_postage.ruby.postage.mkd
+                |-- 20090529-postview_blogging_posts_with_sinatra_and_postage.ruby.sinatra.postage.mkd
+                |-- archive
+                    |-- 20080930-bash_condicional_variables.shell.script.mkd
+                    `-- 20081008-bash_arguments_validation.bash.shell.script.test.mkd
+                `-- drafts
+
+It's possible uses Markdown Extra syntax because Postage use Maruku for
+converting files.
+
+About Markdown lightweight markup language, please, visit
+<http://daringfireball.net/projects/markdown> and Markdown Extra, visit
+<http://michelf.com/projects/php-markdown/extra/>.
+
+== Requirements
+
+Please, Postage has dependencies and most be installed.
+
+* {Maruku}[http://maruku.rubyforge.org/], for convert Maruku in HTML.
+
+== More information
+
+* {Authors}[:link:AUTHORS.html]
+* {Changes}[:link:CHANGES.html]
+* {License}[:link:LICENSE.html]
+
