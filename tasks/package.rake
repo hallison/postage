@@ -57,13 +57,14 @@ end
 
 desc "Install gem file."
 task :install => [ :manifest, :gem ] do
-  `gem install pkg/#{spec.name}-#{spec.version}.gem`
+  `gem install pkg/#{spec.name}-#{spec.version}.gem --local`
 end
 
 desc 'Publish gem and tarball to rubyforge.org.'
 task :release => [ :gem, :package] do |t|
-  sh <<-end_sh.gsub(/[ ]{4}/,'')
+  sh <<-end_sh.gsub(/^[ ]{4}/,'')
     rubyforge add_release #{spec.name} #{spec.name} #{spec.version} #{package "gem"} &&
-    rubyforge add_file    #{spec.name} #{spec.name} #{spec.version} #{package(".tar.bz2")}
+    rubyforge add_file #{spec.name} #{spec.name} #{spec.version} #{package("tar.bz2")}
   end_sh
 end
+

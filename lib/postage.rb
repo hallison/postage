@@ -1,15 +1,8 @@
 # Copyright (c) 2009, Hallison Vasconcelos Batista
-# 
-# Author:: Hallison Batista <email@hallisonbatista.com>
-# 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 
 # Main module for API.
 module Postage
-
-  # Root directory for references library.
-  ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-  INFO = YAML.load_file(File.join(ROOT, "INFO"))
 
   %w(rubygems maruku erb).map do |dependency|
     require dependency
@@ -18,6 +11,10 @@ module Postage
   %w(ruby-debug).map do |optional|
     require optional
   end
+
+  # Root directory for references library.
+  ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  INFO = YAML.load_file(File.join(ROOT, "INFO"))
 
   # Postage core extensions.
   require 'extensions'

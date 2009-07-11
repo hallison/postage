@@ -11,19 +11,16 @@ class TestFinder < Test::Unit::TestCase
 
   def test_should_find_post
     date = Date.new(2009,6,4)
-    post = @find.post(date, 'postage')
-    assert_not_nil post
-    assert date, post.publish_date
+    assert_equal date, @find.post(*date.to_args << 'postage').publish_date
+    assert_equal date, @find.post(*%w[2009 06 04 postage]).publish_date
   end
 
   def test_should_load_all_posts
-    posts = @find.all_posts
-    assert 4, posts.size
+    assert_equal 5, @find.all_posts.size
   end
 
   def test_should_load_all_tags
-    tags = @find.all_post_tags
-    assert 3, tags.size
+    assert_equal 3, @find.all_post_tags.size
   end
 
 end

@@ -35,3 +35,13 @@ class Date
   end
 
 end
+
+class Array
+
+  # Returns elements between first and the specific limit.
+  def limit(size)
+    self[0..size]
+  end
+
+end
+

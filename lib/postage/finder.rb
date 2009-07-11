@@ -25,9 +25,9 @@ module Postage
       @posts.find_all{ |post| post.tags.include?(tag) }
     end
 
-    def post(date, name)
+    def post(year, month, day, name)
       all_posts
-      @posts.find{ |post| post.file.match(%r{#{date.to_args}-#{name}*.*}i) }
+      @posts.find{ |post| post.file.match(%r{#{year}#{month}#{day}-#{name}*.*}i) }
     end
 
     def posts(keywords)
