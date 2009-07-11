@@ -1,0 +1,16 @@
+:name: postage
+:version: 0.1.1
+:date: 2009-07-11
+:cycle: Development release - Pre-alpha
+:summary:
+  Postage API implemented for helper handle text files for posts.
+:description:
+  Postage is an API developed for handle text files for posts for blogs
+  or anything else.
+:authors:
+  - Hallison Batista
+:email: email@hallisonbatista.com
+:homepage: http://postage.rubyforge.org/
+:dependencies:
+  maruku: >= 0.6.0
+

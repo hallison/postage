@@ -1,9 +1,9 @@
 = Postage - API for write posts in simple text files
 
-* {Repository}[http://github.com/hallison/postage/]
-* {Project}[http://rubyforge.org/projects/postage/]
-* {Documentation}[http://postage.rubyforge.org/]
-* {Bug Tracker}[http://rubyforge.org/tracker/?atid=2472&group_id=627&func=browse]
+* {Repository}[http://github.com/hallison/postage]
+* {Project}[http://rubyforge.org/projects/postage]
+* {Documentation}[:link:Postage.html]
+* {Issues}[http://github.com/hallison/postage/issues]
 
 
 Postage is a simple API which load your text files and handle the

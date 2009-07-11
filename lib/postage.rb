@@ -9,6 +9,7 @@ module Postage
 
   # Root directory for references library.
   ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  INFO = YAML.load_file(File.join(ROOT, "INFO"))
 
   %w(rubygems maruku erb).map do |dependency|
     require dependency
@@ -27,26 +28,11 @@ module Postage
 
   class << self
 
-    # Project version.
-    def version
-      "0.1.0"
-    end
-
-    # Tagged for development cycle.
-    def cycle
-      "Development release - Pre-alpha"
-    end
-
     # Returns the module formatted name.
     def to_s
-      "#{self.name} v#{version} (#{cycle})"
+      "#{INFO[:name]} v#{INFO[:version]} (#{INFO[:cycle]})"
     end
     alias :info :to_s
-
-    # Returns module formatted name for versioning.
-    def to_version_s
-      "#{self.name.downcase}-#{version}"
-    end
 
   end
 
