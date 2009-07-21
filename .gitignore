@@ -2,7 +2,7 @@
 *.tmp
 test.*
 tmp/*
-rdoc/*
+doc/*
 pkg/*
 test/fixtures/20090608-creating_new_entry_from_test_unit.ruby.postage.test.mkd
 

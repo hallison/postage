@@ -8,10 +8,6 @@ module Postage
     require dependency
   end
 
-  %w(ruby-debug).map do |optional|
-    require optional
-  end
-
   # Root directory for references library.
   ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
   INFO = YAML.load_file(File.join(ROOT, "INFO"))

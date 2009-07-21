@@ -55,9 +55,14 @@ task :manifest do |file|
   end
 end
 
-desc "Install gem file."
+desc "Install gem package."
 task :install => [ :manifest, :gem ] do
   `gem install pkg/#{spec.name}-#{spec.version}.gem --local`
+end
+
+desc "Uninstall gem package."
+task :uninstall do
+  `gem uninstall #{spec.name}`
 end
 
 desc 'Publish gem and tarball to rubyforge.org.'

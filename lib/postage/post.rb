@@ -77,6 +77,7 @@ class Post
 
   # Get post file name and creates content and save into directory.
   def create_into(directory)
+    build_file
     File.open(File.join(directory, @file), 'w+') do |file|
       post = self
       file << ERB.new(load_template).result(binding)

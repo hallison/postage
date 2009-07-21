@@ -1,7 +1,7 @@
 :name: postage
-:version: 0.1.2
-:date: 2009-07-11
-:cycle: Development release - Pre-alpha
+:version: 0.1.3
+:date: 2009-07-21
+:cycle: Beta release
 :summary:
   Postage API implemented for helper handle text files for posts.
 :description:
