@@ -1,3 +1,4 @@
+# Copyright (c) 2009, Hallison Batista
 module Postage
 # Main class for handle text files. The Post class load file and extract all
 # attributes from name. Examples:
@@ -57,7 +58,7 @@ class Post
     extract_tags(file_name)
     extract_filter(file_name)
     extract_title_and_content(file_name)
-    @file    = File.basename(file_name)
+    @file    = Pathname.new(file_name).expand_path
     @title   = @file.gsub('_', ' ').capitalize if @title.to_s.empty?
     @summary = @content.match(%r{<p>.*</p>}).to_s
     self
@@ -65,7 +66,7 @@ class Post
 
   # Return post name formatted ("year/month/day/name").
   def to_s
-    @file.scan(%r{(\d{4})(\d{2})(\d{2})(.*?)-(.*?)\..*}) do |year,month,day,time,name|
+    @file.to_s.scan(%r{(\d{4})(\d{2})(\d{2})(.*?)-(.*?)\..*}) do |year,month,day,time,name|
       return "#{year}/#{month}/#{day}/#{name}"
     end
   end
@@ -78,14 +79,20 @@ class Post
   # Get post file name and creates content and save into directory.
   def create_into(directory)
     build_file
-    File.open(File.join(directory, @file), 'w+') do |file|
+    directory.join(@file).open 'w+' do |file|
       post = self
       file << ERB.new(load_template).result(binding)
     end
   end
 
+  # Test pattern in title or filename.
   def matched?(regexp)
     @title.match(regexp) || @file.match(regexp)
+  end
+
+  # Sort posts by format.
+  def <=>(post)
+    to_s <=> post.to_s
   end
 
 private
@@ -115,7 +122,7 @@ private
       @filter = case filter.to_s
                 when /md|mkd|mark.*/
                   :markdown
-                when /tx|txt|text.*/
+                when /tx|txl|text.*/
                   :textile
                 else
                   :text
@@ -168,7 +175,7 @@ private
   end
 
   def template
-    File.join(ROOT,'templates','post.erb')
+    ROOT.join('templates','post.erb')
   end
 
 end # class Post

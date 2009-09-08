@@ -1,8 +1,8 @@
 require 'rdoc'
 require 'rake/rdoctask'
 
-Rake::RDocTask.new do |rdoc|
-  rdoc.title    = "Postage"
+Rake::RDocTask.new("doc:api") do |rdoc|
+  rdoc.title    = "Postage - A lightweight API to write post files"
   rdoc.main     = "README"
   rdoc.options  = [ '-SHN', '-f', 'darkfish' ]
   rdoc.rdoc_dir = 'doc'

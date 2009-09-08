@@ -1,33 +1,33 @@
-# Copyright (c) 2009, Hallison Vasconcelos Batista
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))
+# Copyright (C) 2009, Hallison Batista
+$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
 
 # Main module for API.
 module Postage
 
-  %w(rubygems maruku erb).map do |dependency|
-    require dependency
-  end
+  # RubyGems
+  require 'rubygems'
+
+  # 3rd part gems
+  require 'maruku'
+
+  # Core
+  require 'pathname'
+  require 'ostruct'
+  require 'erb'
+
+  # Internal requires
+  require 'postage/extensions'
 
   # Root directory for references library.
-  ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-  INFO = YAML.load_file(File.join(ROOT, "INFO"))
+  ROOT = Pathname.new("#{File.dirname(__FILE__)}/..")
 
-  # Postage core extensions.
-  require 'extensions'
+  # Auto-load information libraries
+  autoload :About,         'postage/about'
+  autoload :Version,       'postage/version'
 
-  # Auto-load all libraries
-  autoload :Post,   'postage/post'
-  autoload :Finder, 'postage/finder'
-
-  class << self
-
-    # Returns the module formatted name.
-    def to_s
-      "#{INFO[:name]} v#{INFO[:version]} (#{INFO[:cycle]})"
-    end
-    alias :info :to_s
-
-  end
+  # Auto-load main libraries
+  autoload :Post,          'postage/post'
+  autoload :Finder,        'postage/finder'
 
 end # module Postage
 

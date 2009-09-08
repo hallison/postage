@@ -1,9 +1,14 @@
+# Copyright (c) 2009, Hallison Batista
 module Postage
 
   # This class is a utility for find all posts in specific directory.
   class Finder
 
-    attr_reader :posts, :tags
+    # Post list
+    attr_reader :posts
+
+    # Post tags list
+    attr_reader :tags
 
     # Finder most be initialized with the directory that contains post files.
     def initialize(directory)
