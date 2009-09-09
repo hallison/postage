@@ -11,7 +11,7 @@ class TestPost < Test::Unit::TestCase
       :title => "Postage test <em>post</em>",
       :tags => %w(ruby postage),
       :filter => :markdown,
-      :file => "20090604-postage_test_post.ruby.postage.mkd"
+      :file   => "#{File.dirname(__FILE__)}/fixtures/20090604-postage_test_post.ruby.postage.mkd"
     }
     @post = Postage::Post.load("#{File.dirname(__FILE__)}/fixtures/20090604-postage_test_post.ruby.postage.mkd")
   end
@@ -26,7 +26,7 @@ class TestPost < Test::Unit::TestCase
   def test_should_load_attributes_from_file_name_with_datetime
     @attributes.update(
       :publish_date => DateTime.new(2009,6,4,14,38,5),
-      :file         => "20090604143805-postage_test_post.ruby.postage.mkd"
+      :file         => "#{File.dirname(__FILE__)}/fixtures/20090604143805-postage_test_post.ruby.postage.mkd"
     )
     @post = Postage::Post.load("#{File.dirname(__FILE__)}/fixtures/20090604143805-postage_test_post.ruby.postage.mkd")
     @attributes.each do |attribute, value|

@@ -40,7 +40,12 @@ class Post
   attr_reader :content
   # Filter for render post file.
   attr_reader :filter
+
+  # Post text file
   attr_reader :file
+
+  # Post file path
+  attr_reader :path
 
   # Initialize new post using options.
   def initialize(options = {})
@@ -58,7 +63,8 @@ class Post
     extract_tags(file_name)
     extract_filter(file_name)
     extract_title_and_content(file_name)
-    @file    = Pathname.new(file_name).expand_path
+    @path    = Pathname.new(file_name)
+    @file    = @path.to_s
     @title   = @file.gsub('_', ' ').capitalize if @title.to_s.empty?
     @summary = @content.match(%r{<p>.*</p>}).to_s
     self
@@ -79,7 +85,7 @@ class Post
   # Get post file name and creates content and save into directory.
   def create_into(directory)
     build_file
-    directory.join(@file).open 'w+' do |file|
+    Pathname.new(directory).join(@file).open 'w+' do |file|
       post = self
       file << ERB.new(load_template).result(binding)
     end
