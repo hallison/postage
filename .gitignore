@@ -1,8 +1,10 @@
 .*.sw[p-z]
 *.tmp
+*.html
+*.ru
 test.*
-tmp/*
 doc/*
 pkg/*
-test/fixtures/20090608-creating_new_entry_from_test_unit.ruby.postage.test.mkd
+posts/*
+tmp/*
 
