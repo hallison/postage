@@ -1,10 +1,9 @@
 .*.sw[p-z]
-*.tmp
+*.gem
 *.html
 *.ru
+*.tmp
 test.*
 doc/*
-pkg/*
-posts/*
 tmp/*
 

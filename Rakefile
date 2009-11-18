@@ -23,11 +23,19 @@ def test(*args)
 end
 
 def manifest
-  @manifest ||= `git ls-files`.split.sort.reject{ |out| out =~ /^\./ || out =~ /^doc/ }
+  @manifest ||= `git ls-files`.split("\n").sort.reject do |out|
+    out =~ /^\./ || out =~ /^doc/
+  end.map do |file|
+    "    #{file.inspect}"
+  end.join(",\n")
 end
 
 def history
   @history ||= `git log master --date=short --format='%d;%cd;%s;%b;'`
+end
+
+def version
+  @version ||= Postage.version
 end
 
 def gemspec
@@ -74,25 +82,63 @@ namespace :doc do
 
 end
 
+# Versioning
+# =============================================================================
+
+namespace :version do
+
+  major, minor, patch, build = version.tag.split(".").map{ |key| key.to_i } << 0
+
+  desc "Dump major version"
+  task :major do
+    version.tag = "#{major+=1}.0.0"
+    version.save!
+    puts version.to_hash.to_yaml
+  end
+
+  desc "Dump minor version"
+  task :minor do
+    version.tag = "#{major}.#{minor+=1}.0"
+    version.save!
+    puts version.to_hash.to_yaml
+  end
+
+  desc "Dump patch version"
+  task :patch do
+    version.tag = "#{major}.#{minor}.#{patch+=1}"
+    version.save!
+    puts version.to_hash.to_yaml
+  end
+
+  desc "Dump build version"
+  task :build do
+    version.tag = "#{major}.#{minor}.#{patch}.#{build+=1}"
+    version.save!
+    puts version.to_hash.to_yaml
+  end
+
+end
+
+task :version => "version:build"
+
 # RubyGems
 # =============================================================================
 
 namespace :gem do
 
-  file gemspec.file => FileList[gemspec.spec.files] do
-    when_writing "Creating #{gemspec.file}" do
-      gemspec.file.open "w+" do |specfile|
-        specfile << gemspec.spec.to_yaml
-      end
-    end
-    puts "Successfully build #{gemspec.file} file"
+  file gemspec.file => FileList["{lib,test}/**", "Rakefile"] do
+    spec = gemspec.file.read
+    spec.sub! /spec\.version\s*=\s*".*?"/,  "spec.version = #{version.tag.inspect}"
+    spec.sub! /spec\.date\s*=\s*".*?"/,     "spec.date = #{version.date.to_s.inspect}"
+    spec.sub! /spec\.files\s*=\s*\[.*?\]/m, "spec.files = [\n#{manifest}\n  ]"
+
+    gemspec.file.open("w+") { |file| file << spec }
+
+    puts "Successfully update #{gemspec.file} file"
   end
 
-  desc "Build gem specification file #{gemspec.file}"
-  task :spec => [gemspec.file.to_s]
-
   desc "Build gem package #{gemspec.spec.file_name}"
-  task :build => :spec do
+  task :build => gemspec.file do
     sh "gem build #{gemspec.file}"
   end
 
@@ -103,7 +149,7 @@ namespace :gem do
 
   desc "Install gem package #{gemspec.spec.file_name}"
   task :install => :build do
-    sh "gem install #{gemspec.spec.file_name}.gem --local"
+    sh "gem install #{gemspec.spec.file_name} --local"
   end
 
   desc "Uninstall gem package #{gemspec.spec.file_name}"
