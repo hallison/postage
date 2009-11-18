@@ -1,0 +1,42 @@
+== v0.1.4.1 - 2009-09-09 - Fixes for version 0.1.4.1
+
+* Fixes in post file.
+* Added attribute "path" in post class.
+* Fixed in method for build post file.
+
+== v0.1.4 - 2009-09-08 - Improvements for version 0.1.4
+
+* Updates in documentation format.
+* Updates in information files.
+* Fixes in extension requires.
+* Added gemspec file.
+
+== v0.1.3 - 2009-07-21 - Updates for version 0.1.3.
+
+* Removed debug flags.
+* Added task for uninstall gem package.
+* Documentation updated.
+
+== v0.1.2 - 2009-07-13 - Fixes for version 0.1.2.
+
+* All tests have been fixed.
+* Post class have been updated.
+* Finder class have been updated.
+* Fix syntax in task release.
+* Added new extensions.
+
+== v0.1.1 - 2009-07-11 - Enhancements for version 0.1.1.
+
+* Added useful tasks for packaging and release versions
+  in RubyForge.org.
+* New information files.
+
+== v0.1.0 - 2009-07-10 - Features for version 0.1.0.
+
+* API extracted from the Postview project.
+* Posts and all attributes are loaded from text files.
+* All files are found by Finder class.
+
+== v0.0.0 - 2009-07-09 - First commit.
+
+
