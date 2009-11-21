@@ -110,7 +110,7 @@ class Postage::Entry
     block_given? ? @@files.map(&block) : @@files
   end
 
-protected
+private
 
   # Extract title and content from file.
   def extract_title_and_content

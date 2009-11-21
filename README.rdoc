@@ -42,11 +42,11 @@ For use files as posts in a blog, use Post class.
 Postage work with following Gems:
 
 * For Markdown filter:
-  * {Maruku}[http://maruku.rubyforge.org/] which is default library.
-  * {RDiscount}[http://github.com/rtomayko/rdiscount/].
-  * {BlueCloth}[http://deveiate.org/projects/BlueCloth/].
+  * {Maruku}[http://maruku.rubyforge.org/] (default library)
+  * {RDiscount}[http://github.com/rtomayko/rdiscount/]
+  * {BlueCloth}[http://deveiate.org/projects/BlueCloth/]
 * For Textile filter:
-  * {RedCloth}[http://redcloth.org/].
+  * {RedCloth}[http://redcloth.org/]
 
 That is, you choose your favorite filter for both formats.
 
@@ -76,6 +76,6 @@ About the lightweight markup languages, please, visit the following Web sites:
 
 == Copyright
 
-Postage is Copyright (c) 2009 Hallison Batista and distributed under the MIT
+Copyright (c) 2009 Hallison Batista and distributed under the MIT
 license. See the COPYING file for more info.
 
