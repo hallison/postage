@@ -1,0 +1,81 @@
+= Postage
+
+== Description
+
+A generic interface (API) for handle text files filtered by Markdown or
+Textile syntax.
+
+== Synopsis
+
+Postage is a generic interface (API) which load your text files and handle
+the contents in Markdown or Textile. It help you handle easily plain text
+files for parse to HTML.
+
+Example:
+
+  require 'postage'
+
+  text = Postage::Entry.file("path/to/text_file.mkd")
+  # => #<Postage::Entry:0x7f4fbd9ad418
+  #      @file=#<Pathname:path/to/text_file.mkd>>
+  text.extract_attributes!
+  # => #<Postage::Entry:0x7f4fbd9ad418
+  # =>   @filter=:markdown,
+  # =>   @title="Entry *test*\n============\n",
+  # =>   @content=["\n",
+  # =>     "Entry *test*. This content uses [Markdown][] syntax.\n",
+  # =>     "\n", "[markdown]: http://daringfireball.net/projects/markdown/\n",
+  # =>     "\n"],
+  # =>   @file=#<Pathname:path/to/text_file.mkd>>
+  page = text.to_html
+  # => "<h1 id='entry_test'>Entry <em>test</em></h1>\n
+  # =>  \n<p>Entry <em>test</em>. This content uses
+  # =>  <a href='http://daringfireball.net/projects/markdown/'>Markdown</a>
+  # =>  syntax.</p>"
+
+For use files as posts in a blog, use Post class.
+
+  post = Postage::Post.file("path/to/2009-11-20.post-file-for-a-blog.tagged.tag.mkd")
+
+== Requirements
+
+Postage work with following Gems:
+
+* For Markdown filter:
+  * {Maruku}[http://maruku.rubyforge.org/] which is default library.
+  * {RDiscount}[http://github.com/rtomayko/rdiscount/].
+  * {BlueCloth}[http://deveiate.org/projects/BlueCloth/].
+* For Textile filter:
+  * {RedCloth}[http://redcloth.org/].
+
+That is, you choose your favorite filter for both formats.
+
+== Install
+
+Install via RubyGems.
+
+  gem install postage
+
+== Information
+
+For more information about the project, please visit the following Web sites:
+
+* Repositories:
+  * {GitHub (Official)}[http://github.com/hallison/postage/]
+  * {CodaSet}[http://codaset.com/hallison/postage/]
+  * {Gitorious}[http://gitorious.org/postview/postage]
+* {Issues}[http://github.com/hallison/postage/issues]
+* {Integration}[http://runcoderun.com/hallison/postage/]
+* {API Documentation}[http://rdoc.info/projects/hallison/postage/]
+
+About the lightweight markup languages, please, visit the following Web sites:
+
+* {Markdown}[http://daringfireball.net/projects/markdown]
+* {Markdown Extra}[http://michelf.com/projects/php-markdown/extra/]
+* {Textile}[http://textile.thresholdstate.com/]
+
+== Copyright
+
+Postage is Copyright (c) 2009 Hallison Batista and distributed under the MIT
+license. See the COPYING file for more info.
+

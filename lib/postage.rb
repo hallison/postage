@@ -1,7 +1,14 @@
 # Copyright (C) 2009, Hallison Batista
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
 
-# Main module for API.
+# Postage is a generic interface (API) which load your text files and handle the
+# contents in Markdown or Textile syntax.
+# 
+# It's useful for _blog engines_, static page generator, or anything else, that
+# uses flat files organized in directories instead databases.
+# 
+# It's possible uses Markdown Extra syntax because Postage use Maruku as default
+# library for converting files that uses this format.
 module Postage
 
   # RubyGems
