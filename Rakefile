@@ -162,22 +162,17 @@ end
 # Test
 # =============================================================================
 
-namespace :test do
-
-  desc "Run all tests"
-  task :all do
+desc "Run tests"
+task :test, [:pattern] do |spec, args|
+  if args[:pattern]
+    test "test/#{args[:pattern]}*_test.rb"
+  else
     test "test/*_test.rb"
   end
-
-  desc "Run only test found by pattern"
-  task :only, [:pattern] do |spec, args|
-    test "test/#{args[:pattern]}*_test.rb"
-  end
-
 end
 
 # Default
 # =============================================================================
 
-task :default => "test:all"
+task :default => "test"
 

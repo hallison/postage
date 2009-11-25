@@ -137,10 +137,6 @@ private
     @filter
   end
 
-  #def extract_tags(file_name)
-  #  file_name.scan(%r{^.*?\.(.*)\..*}).to_s.split(".")
-  #end
-
   # Creates path for entry file.
   def create_path
     @file.mkpath unless @file.dirname.exist?

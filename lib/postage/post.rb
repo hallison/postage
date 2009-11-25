@@ -1,5 +1,5 @@
 # Copyright (c) 2009, Hallison Batista
-module Postage
+#
 # Main class for handle text files. The Post class load file and extract all
 # attributes from name. Examples:
 #
@@ -27,45 +27,20 @@ module Postage
 #
 #     [markdown]: http://daringfireball.net/projects/markdown/
 #   end_content
-class Post
+class Postage::Post < Postage::Entry
 
   # Post publish date, of course.
-  attr_reader :publish_date
-  # The title accepts Markdown syntax.
-  attr_reader :title
+  attr_reader :date
+
   # Tags accepts only one word per tag.
   attr_reader :tags
+
   # Summary is a first paragraph of content.
   attr_reader :summary
-  attr_reader :content
-  # Filter for render post file.
-  attr_reader :filter
-
-  # Post text file
-  attr_reader :file
-
-  # Post file path
-  attr_reader :path
-
-  # Initialize new post using options.
-  def initialize(options = {})
-    options.instance_variables_set_to(self)
-  end
-
-  # Load all attributes from file name and read content.
-  def self.load(file_name)
-    new.extract_attributes(file_name)
-  end
 
   # Check and extract all attributes from file name.
-  def extract_attributes(file_name)
-    extract_publish_date(file_name)
-    extract_tags(file_name)
-    extract_filter(file_name)
-    extract_title_and_content(file_name)
-    @path    = Pathname.new(file_name)
-    @file    = @path.to_s
-    @title   = @file.gsub('_', ' ').capitalize if @title.to_s.empty?
+  def extract_attributes!
+    super
     @summary = @content.match(%r{<p>.*</p>}).to_s
     self
   end
@@ -103,37 +78,34 @@ class Post
 
 private
 
-  def extract_publish_date(file_name)
-    file_name.scan(%r{/(\d{4})(\d{2})(\d{2})(.*?)-.*}) do |year,month,day,time|
-      return extract_publish_datetime(file_name) unless time.empty?
-      @publish_date = Date.new(year.to_i, month.to_i, day.to_i)
-    end
+  REGEX_DATE     = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
+  REGEX_DATETIME = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
+
+  def extract_summary
+    @summary = @content.to_s.match(%r{\n.*?\n\n}m).to_s
   end
 
-  def extract_publish_datetime(file_name)
-    file_name.scan(%r{/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})-.*}) do |year,month,day,hour,min,sec|
-      @publish_date = DateTime.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
-    end
-  end
-  def extract_title(file_name)
-    Maruku.new(title).to_html.gsub(/<[hp]\d{0,1}.*?>(.*)<\/[hp]\d{0,1}>/){$1}
+  def extract_tags
+    @tags = @file.to_s.scan(%r{^.*?\.(.*)\..*}).to_s.split(".")
   end
 
-  def extract_tags(file_name)
-    @tags = file_name.scan(%r{.*?-.*?\.(.*)\..*}).to_s.split('.')
+  def extract_date
+    regexp, klass = @file.to_s =~ REGEX_DATETIME ? [ REGEX_DATETIME, DateTime] : [REGEX_DATE, Date]
+    @file.to_s.scan(regexp) do |year, month, day, hour, min, sec|
+      @date = if hour && min && sec
+                klass.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
+              else
+                klass.new(year.to_i, month.to_i, day.to_i)
+              end
+    end
+    @date
   end
 
-  def extract_filter(file_name)
-    file_name.scan(%r{.*\.(.*)}) do |filter|
-      @filter = case filter.to_s
-                when /md|mkd|mark.*/
-                  :markdown
-                when /tx|txl|text.*/
-                  :textile
-                else
-                  :text
-                end
+  def extract_datetime
+    @file.to_s.scan(REGEX_DATETIME) do |year,month,day,hour,min,sec|
+      @date = DateTime.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
     end
+    @date
   end
 
   def find_file(year, month, day, name)
@@ -184,7 +156,5 @@ private
     ROOT.join('templates','post.erb')
   end
 
-end # class Post
-
-end # module Postage
+end # class Postage::Post
 
