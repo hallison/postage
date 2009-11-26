@@ -47,15 +47,6 @@ class PostTest < Test::Unit::TestCase
   end
 
   should "extract date or datetime" do
-    #@attributes.update(
-    #  :date => DateTime.new(2009,6,4,14,38,5),
-    #  :file => PATH.join("fixtures/20090604143805-postage_test_post.ruby.postage.mkd")
-    #)
-    #@post = Postage::Post.load(PATH.join("fixtures/20090604143805-postage_test_post.ruby.postage.mkd"))
-    #@attributes.each do |attribute, value|
-    #  assert_equal value, @post.send(attribute)
-    #end
-    #assert_equal "2009/06/04/postage_test_post", "#{@post}"
     assert_equal Date.new(2005,6,2), Postage::Post.file("2005-06-02-test-file.tag.mkd").send(:extract_date)
     assert_equal Date.new(2005,6,2), Postage::Post.file("2005_06_02-test_file.tag.mkd").send(:extract_date)
     assert_equal Date.new(2005,6,2), Postage::Post.file("20050602-test_file.tag.mkd").send(:extract_date)

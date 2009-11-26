@@ -159,13 +159,10 @@ private
 
   # Create file name from title.
   def create_file_name
-    _filename = @title.to_s.
-      gsub(/[=\n\W]/,' ').
-      squeeze(' ').strip.
-      gsub(/[\s\W]/,"_").downcase
-    @file = self.class.options.path.join("#{_filename}.#{file_extension}")
+    @file = self.class.options.path.join("#{file_name}.#{file_extension}")
   end
 
+  # Create file using extension by filter.
   def create_file_extension
     @filter ||= :markdown
     @file = Pathname.new("#{@file}.#{file_extension}")
@@ -181,6 +178,10 @@ private
     when :unknow   then "mkd"
     else "mkd"
     end
+  end
+
+  def file_name
+    @title.to_s.gsub(/[=\n\W]/,' ').squeeze(' ').strip.gsub(/[\s\W]/,"_").downcase
   end
 
 end

@@ -71,15 +71,15 @@ class Postage::Post < Postage::Entry
     @title.match(regexp) || @file.match(regexp)
   end
 
-  # Sort posts by format.
+  # Sort posts by file name.
   def <=>(post)
-    to_s <=> post.to_s
+    @file.basename.to_s <=> post.file.basename.to_s
   end
 
 private
 
-  REGEX_DATE     = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
-  REGEX_DATETIME = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
+  REGEXP_DATE     = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
+  REGEXP_DATETIME = %r{/(\d{4})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}(\d{2})[-_]{0,1}.*}
 
   def extract_summary
     @summary = @content.to_s.match(%r{\n.*?\n\n}m).to_s
@@ -90,62 +90,15 @@ private
   end
 
   def extract_date
-    regexp, klass = @file.to_s =~ REGEX_DATETIME ? [ REGEX_DATETIME, DateTime] : [REGEX_DATE, Date]
+    regexp = @file.to_s =~ REGEXP_DATETIME ? REGEXP_DATETIME : REGEXP_DATE
     @file.to_s.scan(regexp) do |year, month, day, hour, min, sec|
       @date = if hour && min && sec
-                klass.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
+                DateTime.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
               else
-                klass.new(year.to_i, month.to_i, day.to_i)
+                Date.new(year.to_i, month.to_i, day.to_i)
               end
     end
     @date
-  end
-
-  def extract_datetime
-    @file.to_s.scan(REGEX_DATETIME) do |year,month,day,hour,min,sec|
-      @date = DateTime.new(year.to_i, month.to_i, day.to_i, hour.to_i, min.to_i, sec.to_i)
-    end
-    @date
-  end
-
-  def find_file(year, month, day, name)
-    # TODO: check posts directory
-    Dir["#{year}#{month}#{day}-#{name}**.*"].first
-  end
-
-  def load_file(file)
-    File.read(file)
-  end
-
-  def extract_title_and_content(file_name)
-    _content = File.readlines(file_name)
-    _title   = _content.shift
-    _title  += _content.shift if (_content.first =~ /==/)
-    @title   = Maruku.new(_title).to_html.gsub(/<h1.*?>(.*)<\/h1>/){$1}
-    @content = Maruku.new(_content.to_s).to_html
-  end
-
-  def build_file_name
-    @title.downcase.gsub(/ /, '_').gsub(/[^a-z0-9_]/, '').squeeze('_')
-  end
-
-  def build_tags
-    @tags.join('.')
-  end
-
-  def build_publish_date
-    @publish_date.strftime('%Y%m%d')
-  end
-
-  def build_filter
-    case @filter
-      when :markdown
-        "mkd"
-      when :textile
-        "txl"
-      else :none
-        ""
-    end
   end
 
   def load_template
