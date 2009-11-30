@@ -1,0 +1,5 @@
+New entry test
+==============
+
+New _content_ for **new entry**.
+

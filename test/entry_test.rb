@@ -6,17 +6,32 @@ require 'test/customizations'
 
 class EntryTest < Test::Unit::TestCase
 
-  PATH = Pathname.new(File.dirname __FILE__).expand_path
+  PATH = Pathname.new(File.dirname __FILE__).join("fixtures/entries").expand_path
 
   def setup
     @attributes = {
-      :file => PATH.join("fixtures/entry_test.mkd"),
+      :file => PATH.join("entry_test.mkd"),
       :title => "Entry *test*\n============\n",
       :content => ["\n", "Entry *test*. This content uses [Markdown][] syntax.\n", "\n",
                    "[markdown]: http://daringfireball.net/projects/markdown/\n", "\n"],
       :filter => :markdown
     }
+    @options = {
+      :path => PATH,
+      :format => ":metaname.:extname"
+    }
+    Postage::Post.configure do |options|
+      @options.map do |option, value|
+        options.send("#{option}=", value)
+      end
+    end
     @entry = Postage::Entry.file(@attributes[:file])
+  end
+
+  should "check attributes configuration" do
+    @options.map do |option, value|
+      assert_equal value, Postage::Post.options.send(option)
+    end
   end
 
   should "extract filter from file name" do
@@ -45,7 +60,7 @@ class EntryTest < Test::Unit::TestCase
   end
 
   should "create a new entry file" do
-    entry = Postage::Entry.file("#{PATH}/fixtures/new_entry_test.mkd").create!
+    entry = Postage::Entry.file("#{PATH}/new_entry_test.mkd").create!
     assert entry.file.exist?
     assert entry.file.file?
     assert_equal "New entry test\n==============\n", entry.title
@@ -54,7 +69,7 @@ class EntryTest < Test::Unit::TestCase
 
   should "create a new entry from attributes" do
     entry = Postage::Entry.new :title   => "New entry test\n==============\n",
-                               :file    => PATH.join("fixtures/new_entry_test_again"),
+                               :file    => PATH.join("new_entry_test_again"),
                                :content => <<-end_content.gsub(/^[ ]{6}/, '')
 
       New _content_ for **new entry**.
@@ -63,7 +78,7 @@ class EntryTest < Test::Unit::TestCase
     entry.create!
     assert entry.file.exist?
     assert entry.file.file?
-    assert_equal PATH.join("fixtures").expand_path, entry.file.dirname
+    assert_equal PATH.expand_path, entry.file.dirname
     assert_equal :markdown, entry.filter
     assert_equal "New entry test\n==============\n", entry.title
   end
@@ -73,6 +88,14 @@ class EntryTest < Test::Unit::TestCase
     assert_match /^<h1.*?>.*?<\/h1>.*<p.*>.*?<\/p>/m, @entry.to_html
     assert_match /^.*?|.*?<.*?>/, @entry.title_to_html
     assert_match /<.*?>.*?<\/.*>/, @entry.content_to_html
+  end
+
+  should "find all entries" do
+    entries = Postage::Entry.files do |entry|
+      assert_equal @options[:path], entry.file.dirname
+    end
+
+    assert_equal 3, entries.size
   end
 
 end

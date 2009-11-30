@@ -19,7 +19,8 @@ module Postage
 
   # Core
   require 'pathname'
-  require 'ostruct'
+  #require 'ostruct'
+  require 'yaml'
   require 'erb'
 
   # Internal requires
@@ -32,6 +33,10 @@ module Postage
   autoload :Entry,  'postage/entry'
   autoload :Post,   'postage/post'
   autoload :Finder, 'postage/finder'
+
+  def self.configure(&block)
+    yield Config.new(&block)
+  end
 
   # Version
   def self.version

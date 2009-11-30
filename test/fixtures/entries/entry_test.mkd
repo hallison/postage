@@ -1,0 +1,7 @@
+Entry *test*
+============
+
+Entry *test*. This content uses [Markdown][] syntax.
+
+[markdown]: http://daringfireball.net/projects/markdown/
+
