@@ -18,9 +18,7 @@
 #  page = Postage::Entry.new("anything-written-using-markdown.mkd").extract_attributes!
 class Postage::Entry
 
-  Options = Struct.new :path, :pattern
-
-  # Entry file name.
+  # Entry file.
   attr_reader :file
 
   # Filter that will used for parse entry content.
@@ -85,31 +83,6 @@ class Postage::Entry
     Maruku.new("#{title}\n#{content}").to_html
   end
 
-  # Configuration custom options.
-  # Example:
-  #  Postage::Entry.configure do |options|
-  #    options.path = "~/documents/pages" # path location for all entries
-  #    options.pattern = "*.mkd"          # pattern for file names
-  #  end
-  #  Postage::Entry.find_all # find all entry files placed in path.
-  def self.configure
-    yield options
-  end
-
-  # Entry options
-  def self.options
-    @@options ||= Options.new ".", "*.{mkd,txl,txt}"
-  end
-
-  # Find all entry files placed in path using pattern file name.
-  # See #configure method for more information about this.
-  def self.files(&block)
-    @@files = Dir["#{options.path}/#{options.pattern}"].map do |file_name|
-      file(file_name)
-    end
-    block_given? ? @@files.map(&block) : @@files
-  end
-
 private
 
   # Extract title and content from file.
@@ -159,7 +132,7 @@ private
 
   # Create file name from title.
   def create_file_name
-    @file = self.class.options.path.join("#{file_name}.#{file_extension}")
+    @file = "#{file_name}.#{file_extension}"
   end
 
   # Create file using extension by filter.
@@ -184,5 +157,5 @@ private
     @title.to_s.gsub(/[=\n\W]/,' ').squeeze(' ').strip.gsub(/[\s\W]/,"_").downcase
   end
 
-end
+end # class Postage::Entry
 
