@@ -6,7 +6,7 @@ require 'test/customizations'
 
 class EntryTest < Test::Unit::TestCase
 
-  PATH = Pathname.new(File.dirname __FILE__).join("fixtures/entries").expand_path
+  PATH = Pathname.new(File.dirname(__FILE__)).join("fixtures/entries").expand_path
 
   def setup
     @attributes = {

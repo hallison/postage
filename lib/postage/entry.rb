@@ -54,8 +54,10 @@ class Postage::Entry < Postage::Base
   # The Entry file will be generated based in file name and filter for extension.
   def initialize(attributes = {})
     super(attributes)
-    extract_name
-    extract_filter
+    if @file
+      extract_name
+      extract_filter
+    end
   end
 
   # Initialize a entry using file name.

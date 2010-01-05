@@ -6,7 +6,7 @@ require 'test/customizations'
 
 class ConfigTest < Test::Unit::TestCase
 
-  PATH = Pathname.new(File.dirname __FILE__).expand_path
+  PATH = Pathname.new(File.dirname(__FILE__)).expand_path
 
   def setup
     @options = {
