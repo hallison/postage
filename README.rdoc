@@ -2,7 +2,7 @@
 
 == Description
 
-A generic interface (API) for handle text files filtered by Markdown or
+A *generic* interface (*API*) for handle text files filtered by Markdown or
 Textile syntax.
 
 == Synopsis
@@ -13,29 +13,29 @@ files for parse to HTML.
 
 Example:
 
-  require 'postage'
+ require 'postage'
 
-  text = Postage::Entry.file("path/to/text_file.mkd")
-  # => #<Postage::Entry:0x7f4fbd9ad418
-  #      @file=#<Pathname:path/to/text_file.mkd>>
-  text.extract_attributes!
-  # => #<Postage::Entry:0x7f4fbd9ad418
-  # =>   @filter=:markdown,
-  # =>   @title="Entry *test*\n============\n",
-  # =>   @content=["\n",
-  # =>     "Entry *test*. This content uses [Markdown][] syntax.\n",
-  # =>     "\n", "[markdown]: http://daringfireball.net/projects/markdown/\n",
-  # =>     "\n"],
-  # =>   @file=#<Pathname:path/to/text_file.mkd>>
-  page = text.to_html
-  # => "<h1 id='entry_test'>Entry <em>test</em></h1>\n
-  # =>  \n<p>Entry <em>test</em>. This content uses
-  # =>  <a href='http://daringfireball.net/projects/markdown/'>Markdown</a>
-  # =>  syntax.</p>"
+ text = Postage::Entry.file("path/to/text_file.mkd")
+ # => #<Postage::Entry:0x7f4fbd9ad418
+ #      @file=#<Pathname:path/to/text_file.mkd>>
+ text.extract_attributes!
+ # => #<Postage::Entry:0x7f4fbd9ad418
+ # =>   @filter=:markdown,
+ # =>   @title="Entry *test*\n============\n",
+ # =>   @content=["\n",
+ # =>     "Entry *test*. This content uses [Markdown][] syntax.\n",
+ # =>     "\n", "[markdown]: http://daringfireball.net/projects/markdown/\n",
+ # =>     "\n"],
+ # =>   @file=#<Pathname:path/to/text_file.mkd>>
+ page = text.to_html
+ # => "<h1 id='entry_test'>Entry <em>test</em></h1>\n
+ # =>  \n<p>Entry <em>test</em>. This content uses
+ # =>  <a href='http://daringfireball.net/projects/markdown/'>Markdown</a>
+ # =>  syntax.</p>"
 
 For use files as posts in a blog, use Post class.
 
-  post = Postage::Post.file("path/to/2009-11-20.post-file-for-a-blog.tagged.tag.mkd")
+ post = Postage::Post.file("path/to/2009-11-20.post-file-for-a-blog.tagged.tag.mkd")
 
 == Requirements
 
@@ -76,6 +76,7 @@ About the lightweight markup languages, please, visit the following Web sites:
 
 == Copyright
 
-Copyright (c) 2009 Hallison Batista and distributed under the MIT
-license. See the COPYING file for more info.
+Copyright (c) 2009 Hallison Batista
+
+Distributed under the MIT license. See the COPYING file for more info.
 
