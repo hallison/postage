@@ -67,7 +67,7 @@ namespace :doc do
   desc "Build API documentation (doc/api)"
   task :api => "doc/api/index.html"
 
-  desc "Creates/updates CHANGELOG file."
+  desc "Creates/updates CHANGELOG file"
   task :changelog do |spec|
     File.open("CHANGELOG", "w+") do |changelog|
       history.scan(/(.*?);(.*?);(.*?);(.*?);/m) do |tag, date, subject, content|
@@ -117,6 +117,13 @@ namespace :version do
     puts version.to_hash.to_yaml
   end
 
+  desc "Check version"
+  task :check do
+    tag = `git tag | sort | tail -n 1`
+    @tagged = version.tag == tag.strip
+    puts "Version #{version.tag} #{@tagged ? 'tagged' : 'not tagged'}"
+  end
+
 end
 
 task :version => "version:build"
@@ -155,6 +162,27 @@ namespace :gem do
   desc "Uninstall gem package #{gemspec.spec.file_name}"
   task :uninstall do
     sh "gem uninstall #{gemspec.spec.name} --version #{gemspec.spec.version}"
+  end
+
+end
+
+# Git operations
+# =============================================================================
+
+namespace :git do
+
+  desc "Push to news"
+  task :news do
+    for remote in %w(github codaset gitorious)
+      sh "git push #{remote} news"
+    end
+  end
+
+  desc "Push to master (stable) branch with all tags"
+  task :release => "version:check" do
+    for remote in %w(origin github codaset gitorious)
+      sh "git push --tags #{remote} master"
+    end if @tagged
   end
 
 end
