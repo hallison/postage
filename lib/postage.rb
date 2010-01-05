@@ -71,9 +71,9 @@ module Postage
   #
   # You can assign meta-attributes in format file name. The meta-attributes are:
   # 
-  # [<b>:metaname</b>]
+  # [<b>:name</b>]
   #   File name which point to entry title.
-  # [<b>:extname</b>]
+  # [<b>:extension</b>]
   #   File extension which describe a filter.
   # [<b>:year</b>,<b>:month</b>,<b>:day</b>]
   #   Entry publish date attributes.
@@ -84,13 +84,13 @@ module Postage
   #   # For simple entry file
   #   Postage.configure do |config|
   #     config.path   = "~/hallison/docs"
-  #     config.format = ":metaname.:extname"
+  #     config.format = ":metaname.:filter"
   #   end
   #
   #   # For articles (posts):
   #   Postage.configure do |config|
   #     config.path   = "~/hallison/posts"
-  #     config.format = ":year-:month-:day-:metaname.:tags.:extname"
+  #     config.format = ":year-:month-:day-:metaname.:tags.:filter"
   #   end
   #
   class Config < Base
@@ -163,6 +163,11 @@ module Postage
 
     def self.current
       new(YAML.load_file(FILE))
+    end
+
+    def self.to_s
+      name.match /(.*?)::.*/
+      "#{$1} v#{current.tag}, #{current.date} (#{current.milestone})"
     end
 
   end # class Version

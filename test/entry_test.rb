@@ -18,20 +18,10 @@ class EntryTest < Test::Unit::TestCase
     }
     @options = {
       :path => PATH,
-      :format => ":metaname.:extname"
+      :format => ":name.:extension"
     }
-    Postage::Post.configure do |options|
-      @options.map do |option, value|
-        options.send("#{option}=", value)
-      end
-    end
+    Postage.configure @options
     @entry = Postage::Entry.file(@attributes[:file])
-  end
-
-  should "check attributes configuration" do
-    @options.map do |option, value|
-      assert_equal value, Postage::Post.options.send(option)
-    end
   end
 
   should "extract filter from file name" do
@@ -47,9 +37,10 @@ class EntryTest < Test::Unit::TestCase
   end
 
   should "create file name and filter extension" do
-    entry = Postage::Entry.new(@attributes.reject{|key, value| key == :file})
-    assert_equal "mkd", entry.send(:file_extension)
+    entry = Postage::Entry.new(@attributes)
+    assert_equal "mkd", entry.extension
     assert_equal @attributes[:file].basename.to_s, entry.send(:create_file_name)
+    assert_equal "entry_test", entry.name
   end
 
   should "validates entry attributes" do
@@ -61,8 +52,8 @@ class EntryTest < Test::Unit::TestCase
 
   should "create a new entry file" do
     entry = Postage::Entry.file("#{PATH}/new_entry_test.mkd").create!
-    assert entry.file.exist?
-    assert entry.file.file?
+    assert entry.exist?
+    assert entry.file?
     assert_equal "New entry test\n==============\n", entry.title
 
   end
@@ -76,9 +67,9 @@ class EntryTest < Test::Unit::TestCase
 
     end_content
     entry.create!
-    assert entry.file.exist?
-    assert entry.file.file?
-    assert_equal PATH.expand_path, entry.file.dirname
+    assert entry.exist?
+    assert entry.file?
+    assert_equal PATH.expand_path, entry.dirname
     assert_equal :markdown, entry.filter
     assert_equal "New entry test\n==============\n", entry.title
   end
@@ -92,7 +83,7 @@ class EntryTest < Test::Unit::TestCase
 
   should "find all entries" do
     entries = Postage::Entry.files do |entry|
-      assert_equal @options[:path], entry.file.dirname
+      assert_equal @options[:path], entry.dirname
     end
 
     assert_equal 3, entries.size
