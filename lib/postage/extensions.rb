@@ -29,9 +29,9 @@ class Date
   #
   #     date = Date.new(2009,6,9)
   #     date.to_s     # => 2009-06-09
-  #     date.to_args  # => [ "2009", "06", "09" ]
+  #     date.to_args  # => [ 2009, 6, 9 ]
   def to_args
-    self.to_s.split('-')
+    self.to_s.split('-').map{ |v| v.to_i }
   end
 
 end

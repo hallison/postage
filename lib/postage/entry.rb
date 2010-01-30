@@ -1,4 +1,4 @@
-# Copyright (c) 2009 Hallison Batista
+# = Postage Entry class
 #
 # Class for handle a text entry using a file that written with any supported filter
 # (Markdown or Textile) syntax.
@@ -15,14 +15,14 @@
 #  # [html]: http://en.wikipedia.org/wiki/HTML/
 #  # [postage entry]: http://github.com/hallison/postage/
 #  #
-#  page = Postage::Entry.new("anything-written-using-markdown.mkd").extract_attributes!
+#  page = Postage::Entry.file("anything-written-using-markdown.mkd").extract_attributes!
 class Postage::Entry < Postage::Base
 
   require 'forwardable'
 
   extend Forwardable
 
-  def_delegators :file, :dirname, :basename, :extname, :file?, :exist?
+  def_delegators :file, :file?, :exist?
 
   # Entry file.
   attr_reader :file
@@ -31,19 +31,18 @@ class Postage::Entry < Postage::Base
   attr_reader :name
 
   # Filter that will used for parse entry content.
-  attr_reader :filter
+  attr_accessor :filter
 
   # Title of the entry. This attribute accepts Markdown syntax.
-  attr_reader :title
+  attr_accessor :title
 
   # Entry content.
-  attr_reader :content
+  attr_accessor :content
 
   # Initialize a entry using attributes by name.
   # Example:
   #  # entry = Postage::Entry.new :title   => "# New title for a new entry",
   #  #                            :filter  => :markdown,
-  #  #                            :name    => "new-entry",
   #  #                            :content => <<-end_content
   #  # Wow! Use Postage in your projects. Is very easy.
   #  #
@@ -54,42 +53,51 @@ class Postage::Entry < Postage::Base
   # The Entry file will be generated based in file name and filter for extension.
   def initialize(attributes = {})
     super(attributes)
-    if @file
-      extract_name
-      extract_filter
-    end
+    extract_attributes if file
+  end
+
+  # Create file path.
+  def file=(file)
+    @file = Pathname.new(file).expand_path
   end
 
   # Initialize a entry using file name.
-  def self.file(file_name)
-    new :file => Pathname.new(file_name).expand_path
+  def self.file(file) #:yields:entry
+    entry = new(:file => file)
+    block_given? && (yield entry) || entry
   end
 
-  def self.load(file_name)
-    file(file_name).extract_attributes!
+  # Initialize a entry using file name and load all attributes and contents.
+  def self.load(filename)
+    file(filename).extract_attributes.extract_contents
   end
 
   # Find all post files placed in path using pattern file name.
   # See #configure method for more information about this.
-  def self.files(&block)
+  def self.files(&block) #:yields:entry
     @files = Postage.config.glob_files.map do |file_name|
       file(file_name)
     end
     block_given? ? @files.map(&block) : @files
   end
 
-  # Load all attributes from file.
-  def extract_attributes!
-    extract_filter
+  # Load title and content body.
+  def extract_contents
     extract_title_and_content
-    extract_title if @title.empty?
+    self
+  end
+
+  # Load all attributes from file.
+  def extract_attributes
+    extract_name
+    extract_filter
     self
   end
 
   # Create file and write title and content.
   def create!
     create_file_name unless @file
-    create_file_extension if extname.empty?
+    create_file_extension if @file.extname.empty?
     create_title unless @title
     create_path
     create_file
@@ -117,36 +125,28 @@ class Postage::Entry < Postage::Base
     Maruku.new("#{title}\n#{content.join}").to_html
   end
 
-  # Returns file extension by filter.
-  # Default is <tt>.mkd</tt> (Markdown).
+  # Returns file extension by filter. Default is <tt>.mkd</tt> (Markdown).
   def extension
+    extract_filter unless @filter
     case @filter
     when :markdown then "mkd"
     when :textile  then "txl"
     when :text     then "txt"
     when :unknow   then "mkd"
-    else extname.delete(".")
+    else @file.extname.delete(".")
     end
   end
 
 private
 
-  # Extract title and content from file.
-  def extract_title_and_content
-    @content ||= @file.readlines
-    @title   ||= @content.shift
-    @title    << @content.shift if (@content.first =~ /^[=]{3,}/)
-    [@title, @content]
-  end
-
   # Extract name from file name.
   def extract_name
-    @name = basename.to_s.split(".").first
+    @name = @file.basename.to_s.split(".").first
   end
 
   # Extract filter from file name. Default filer is <tt>:markdown</tt>
   def extract_filter
-    @filter = case extname
+    @filter = case @file.extname
               when /md$|mkd$|mkdn$|mark.*?$/
                 :markdown
               when /tx$|txl$|text.*?$/
@@ -155,7 +155,15 @@ private
                 :text
               else
                 :unknow
-              end
+              end if @file
+  end
+
+  # Extract title and content from file.
+  def extract_title_and_content
+    @content ||= @file.readlines
+    @title   ||= @content.shift
+    @title    << @content.shift if (@content.first =~ /^[=]{3,}/)
+    [@title, @content]
   end
 
   # Creates path for entry file.
@@ -180,7 +188,8 @@ private
 
   # Create file name from title.
   def create_file_name
-    @file = "#{name || create_name}.#{extension}"
+    create_name unless @name
+    @file = Pathname.new(Postage.config.path.join("#{name}.#{extension}"))
   end
 
   # Create file using extension by filter.
@@ -190,7 +199,7 @@ private
   end
 
   def create_name
-    @title.to_s.gsub(/[=\n\W]/,' ').squeeze(' ').strip.gsub(/[\s\W]/,"_").downcase
+    @name = @title.to_s.gsub(/[=\n\W]/,' ').squeeze(' ').strip.gsub(/[\s\W]/,"_").downcase
   end
 
 end # class Postage::Entry

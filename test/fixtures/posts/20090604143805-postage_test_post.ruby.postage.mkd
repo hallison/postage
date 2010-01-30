@@ -1,0 +1,10 @@
+Postage test *post*
+===================
+
+The title os post is a first line of document.
+All attributes are specified in file name.
+
+    yyyymmdd-name_of_file.tags.filter
+
+Simple and easy.
+
